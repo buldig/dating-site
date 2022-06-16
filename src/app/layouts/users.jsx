@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination";
+import Pagination from "../components/pagination";
 import paginate from "../utils/paginate";
-import GroupList from "./groupList";
+import GroupList from "../components/groupList";
 import api from "../api";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
-import PropTypes from "prop-types";
+import SearchStatus from "../components/searchStatus";
+import UserTable from "../components/usersTable";
 import _ from "lodash";
+import { useParams } from "react-router-dom";
+import User from "../components/user";
 
 const Users = () => {
   const pageSize = 4;
@@ -17,6 +18,14 @@ const Users = () => {
 
   const [users, setUsers] = useState();
   useEffect(() => api.users.fetchAll().then((data) => setUsers(data)), []);
+
+  const { usersId } = useParams();
+
+  const [user, setUser] = useState();
+  if (usersId) {
+    api.users.getById(usersId).then((item) => setUser(item));
+  }
+
   const handleDelete = (userId) => {
     setUsers(users.filter((user) => user._id !== userId));
   };
@@ -65,7 +74,7 @@ const Users = () => {
     const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
     const userCrop = paginate(sortedUsers, currentPage, pageSize);
     const count = filteredUsers.length;
-
+    if (usersId && user) return <User user={user} />;
     return (
       <div className="d-flex">
         {professions && (
@@ -105,10 +114,6 @@ const Users = () => {
     );
   }
   return "loading...";
-};
-
-Users.propTypes = {
-  users: PropTypes.array.isRequired
 };
 
 export default Users;
