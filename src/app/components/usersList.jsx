@@ -15,7 +15,9 @@ const UsersList = () => {
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
 
   const [users, setUsers] = useState();
-  useEffect(() => api.users.fetchAll().then((data) => setUsers(data)), []);
+  useEffect(() => {
+    api.users.fetchAll().then((data) => setUsers(data));
+  }, []);
 
   const handleDelete = (userId) => {
     setUsers(users.filter((user) => user._id !== userId));
