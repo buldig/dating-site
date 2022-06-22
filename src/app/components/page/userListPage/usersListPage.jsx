@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination";
-import paginate from "../utils/paginate";
-import GroupList from "./groupList";
-import api from "../api";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
+import Pagination from "../../common/pagination";
+import paginate from "../../../utils/paginate";
+import GroupList from "../../common/groupList";
+import api from "../../../api";
+import SearchStatus from "../../ui/searchStatus";
+import UserTable from "../../ui/usersTable";
+import InputSearch from "../../common/form/inputSearch";
 import _ from "lodash";
 
-const UsersList = () => {
+const UsersListPage = () => {
   const pageSize = 4;
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfession] = useState();
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-
   const [users, setUsers] = useState();
+  const [copyOfUsers, setCopyOfUsers] = useState();
+  const [userName, setUserName] = useState("");
   useEffect(() => {
-    api.users.fetchAll().then((data) => setUsers(data));
+    api.users.fetchAll().then((data) => {
+      setUsers(data);
+      setCopyOfUsers(data);
+    });
   }, []);
 
   const handleDelete = (userId) => {
@@ -49,6 +54,8 @@ const UsersList = () => {
   }, [selectedProf]);
   const handleProffesionSelect = (item) => {
     setSelectedProf(item);
+    setUsers(copyOfUsers);
+    setUserName("");
   };
 
   const clearFilter = () => {
@@ -58,6 +65,14 @@ const UsersList = () => {
   const handleSort = (item) => {
     setSortBy(item);
   };
+
+  const handleOnChangeName = (e) => {
+    const nameRegExp = new RegExp(`${e.target.value}`, "gi");
+    if (selectedProf) setSelectedProf(undefined);
+    setUserName(e.target.value);
+    setUsers(copyOfUsers.filter((user) => nameRegExp.test(user.name)));
+  };
+
   if (users) {
     let filteredUsers;
     if (selectedProf) {
@@ -87,6 +102,7 @@ const UsersList = () => {
         )}
         <div className="d-flex flex-column">
           <SearchStatus length={count} />
+          <InputSearch value={userName} onChangeName={handleOnChangeName} />
           {count > 0 && (
             <UserTable
               users={userCrop}
@@ -111,4 +127,4 @@ const UsersList = () => {
   return "loading...";
 };
 
-export default UsersList;
+export default UsersListPage;
