@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
+import CheckBoxField from "../common/form/checkBoxField";
 
 const LoginUser = () => {
-  const [data, setData] = useState({ email: "", password: "" });
+  const [data, setData] = useState({ email: "", password: "", stayOn: false });
   const [errors, setErrors] = useState({});
 
-  const handleChange = ({ target }) => {
+  const handleChange = (target) => {
     setData((prevState) => {
+      console.log(target);
       return { ...prevState, [target.name]: target.value };
     });
   };
@@ -28,7 +30,7 @@ const LoginUser = () => {
         message: "Пароль должен содержать хотя бы одно число"
       },
       min: {
-        message: "Пароль должен состоясть минимум из 8 символов",
+        message: "Пароль должен состоять минимум из 8 символов",
         value: 8
       }
     }
@@ -55,37 +57,33 @@ const LoginUser = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-6 offset-md-3 shadow p-4">
-          <h3 className="mb-4">Login</h3>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              label="Электронная почта"
-              name="email"
-              value={data.email}
-              onChange={handleChange}
-              error={errors.email}
-            />
-            <TextField
-              label="Пароль"
-              type="password"
-              name="password"
-              value={data.password}
-              onChange={handleChange}
-              error={errors.password}
-            />
-            <button
-              type="submit"
-              disabled={!isValid}
-              className="btn btn-primary w-100 mx-auto"
-            >
-              Submit
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <TextField
+        label="Электронная почта"
+        name="email"
+        value={data.email}
+        onChange={handleChange}
+        error={errors.email}
+      />
+      <TextField
+        label="Пароль"
+        type="password"
+        name="password"
+        value={data.password}
+        onChange={handleChange}
+        error={errors.password}
+      />
+      <CheckBoxField value={data.stayOn} onChange={handleChange} name="stayOn">
+        Оставаться в системе
+      </CheckBoxField>
+      <button
+        type="submit"
+        disabled={!isValid}
+        className="btn btn-primary w-100 mx-auto"
+      >
+        Submit
+      </button>
+    </form>
   );
 };
 
