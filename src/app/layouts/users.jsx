@@ -2,7 +2,7 @@ import React from "react";
 import { Route, useParams, Switch } from "react-router-dom";
 import UserPage from "../components/page/userPage";
 import UsersListPage from "../components/page/userListPage";
-import UserEditPage from "../components/page/userPage/userEditPage";
+import UserEditPage from "../components/page/userEditPage";
 const Users = () => {
   const params = useParams();
   const { userId } = params;
