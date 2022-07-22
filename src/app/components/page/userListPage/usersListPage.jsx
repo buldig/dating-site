@@ -7,6 +7,7 @@ import SearchStatus from "../../ui/searchStatus";
 import UserTable from "../../ui/usersTable";
 import InputSearch from "../../common/form/inputSearch";
 import _ from "lodash";
+import { useUser } from "../../../hooks/useUsers";
 
 const UsersListPage = () => {
   const pageSize = 4;
@@ -14,29 +15,25 @@ const UsersListPage = () => {
   const [professions, setProfession] = useState();
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
-  const [users, setUsers] = useState();
-  const [copyOfUsers, setCopyOfUsers] = useState();
   const [userName, setUserName] = useState("");
-  useEffect(() => {
-    api.users.fetchAll().then((data) => {
-      setUsers(data);
-      setCopyOfUsers(data);
-    });
-  }, []);
+
+  const { users } = useUser();
 
   const handleDelete = (userId) => {
-    setUsers(users.filter((user) => user._id !== userId));
+    // setUsers(users.filter((user) => user._id !== userId));
+    console.log(userId);
   };
 
   const handleToggleBookMark = (id) => {
-    setUsers(
-      users.map((user) => {
-        if (user._id === id) {
-          return { ...user, bookmark: !user.bookmark };
-        }
-        return user;
-      })
-    );
+    // setUsers(
+    //   users.map((user) => {
+    //     if (user._id === id) {
+    //       return { ...user, bookmark: !user.bookmark };
+    //     }
+    //     return user;
+    //   })
+    // );
+    console.log("new array");
   };
 
   useEffect(() => {
@@ -54,7 +51,6 @@ const UsersListPage = () => {
   }, [selectedProf]);
   const handleProffesionSelect = (item) => {
     setSelectedProf(item);
-    setUsers(copyOfUsers);
     setUserName("");
   };
 
@@ -67,10 +63,10 @@ const UsersListPage = () => {
   };
 
   const handleOnChangeName = (e) => {
-    const nameRegExp = new RegExp(`${e.target.value}`, "gi");
+    // const nameRegExp = new RegExp(`${e.target.value}`, "gi");
     if (selectedProf) setSelectedProf(undefined);
     setUserName(e.target.value);
-    setUsers(copyOfUsers.filter((user) => nameRegExp.test(user.name)));
+    // setUsers(copyOfUsers.filter((user) => nameRegExp.test(user.name)));
   };
 
   if (users) {

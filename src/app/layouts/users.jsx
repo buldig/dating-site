@@ -1,24 +1,25 @@
 import React from "react";
-import { Route, useParams, Switch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import UserPage from "../components/page/userPage";
 import UsersListPage from "../components/page/userListPage";
 import UserEditPage from "../components/page/userEditPage";
+import UserProvider from "../hooks/useUsers";
 const Users = () => {
   const params = useParams();
-  const { userId } = params;
+  const { userId, edit } = params;
   return (
     <>
-      <Switch>
-        <Route
-          path={`/users/:${userId}/edit`}
-          render={() => <UserEditPage userId={userId} />}
-        />
-        <Route
-          path={`/users/:${userId}`}
-          render={() => <UserPage userId={userId} />}
-        />
-        <Route path="/users" component={UsersListPage} />
-      </Switch>
+      <UserProvider>
+        {userId ? (
+          edit ? (
+            <UserEditPage />
+          ) : (
+            <UserPage userId={userId} />
+          )
+        ) : (
+          <UsersListPage />
+        )}
+      </UserProvider>
     </>
   );
 };
